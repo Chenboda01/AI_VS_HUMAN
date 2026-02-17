@@ -3,7 +3,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const roleModal = document.getElementById('role-selection-modal');
   const roleOptions = document.querySelectorAll('.role-select-btn');
 
-  function startGameWithRole(selectedRole) {
+  function startGameWithRole (selectedRole) {
     roleModal.style.display = 'none';
     roleModal.setAttribute('aria-hidden', 'true');
 
@@ -46,39 +46,57 @@ document.addEventListener('DOMContentLoaded', () => {
     window.gameController = gameController;
 
     console.log(
-      `AI vs HUMAN game initialized with player controlling ${selectedRole.toUpperCase()} side!`
+      `AI vs HUMAN game initialized with player controlling ${selectedRole.toUpperCase()} side!`,
     );
+  }
+
+  // Ensure audio context is ready for sound effects
+  function ensureAudioContext () {
+    try {
+      if (!window.GameHelpersAudioContext) {
+        window.GameHelpersAudioContext = new (window.AudioContext || window.webkitAudioContext)();
+      }
+      const audioContext = window.GameHelpersAudioContext;
+      if (audioContext.state === 'suspended') {
+        audioContext.resume();
+      }
+    } catch (e) {
+      console.log('Audio context not supported:', e);
+    }
   }
 
   roleOptions.forEach((btn) => {
     btn.addEventListener('click', () => {
+      ensureAudioContext(); // Initialize audio on first user interaction
       const role = btn.dataset.role;
       startGameWithRole(role);
     });
   });
 
+  // Give player 10 seconds to choose role before auto-starting
   setTimeout(() => {
     if (roleModal.style.display !== 'none') {
-      console.log('Auto-starting as human for debugging');
+      console.log('Auto-starting as human after 10 seconds');
       startGameWithRole('human');
     }
-  }, 1000);
+  }, 10000);
 });
 
 // UI Manager - Handles all UI updates
 class UIManager {
-  constructor(gameEngine) {
+  constructor (gameEngine) {
     this.gameEngine = gameEngine;
     this.elements = {};
   }
 
-  init() {
+  init () {
     this.cacheElements();
     this.updateUI();
+    this.updateMuteButtonVisual();
     this.setupEventListeners();
   }
 
-  cacheElements() {
+  cacheElements () {
     this.elements = {
       // Scores and stats
       humanScore: document.getElementById('human-score'),
@@ -123,7 +141,19 @@ class UIManager {
     };
   }
 
-  updateUI() {
+  updateMuteButtonVisual () {
+    if (this.elements.muteToggleBtn) {
+      const isMuted = GameHelpers.soundMuted;
+      this.elements.muteToggleBtn.classList.toggle('muted', isMuted);
+      const icon = this.elements.muteToggleBtn.querySelector('i');
+      if (icon) {
+        icon.className = isMuted ? 'fas fa-volume-mute' : 'fas fa-volume-up';
+      }
+      this.elements.muteToggleBtn.innerHTML = `<i class="${icon ? icon.className : isMuted ? 'fas fa-volume-mute' : 'fas fa-volume-up'}"></i> ${isMuted ? 'Sound Off' : 'Sound On'}`;
+    }
+  }
+
+  updateUI () {
     const state = this.gameEngine.getGameState();
     const { players, currentTurn, currentPlayer, gameOver, currentQuestion } =
       state;
@@ -158,7 +188,7 @@ class UIManager {
         btn.textContent = currentQuestion.answers[index];
         btn.setAttribute(
           'aria-label',
-          `Select answer: ${currentQuestion.answers[index]}`
+          `Select answer: ${currentQuestion.answers[index]}`,
         );
         btn.dataset.answerIndex = index;
       });
@@ -182,7 +212,7 @@ class UIManager {
       currentPlayer === 'human' ? '#3b82f6' : '#ef4444';
   }
 
-  updateBattleLog(logEntries) {
+  updateBattleLog (logEntries) {
     this.elements.logContent.innerHTML = '';
     logEntries.slice(-10).forEach((entry) => {
       const logEntry = document.createElement('div');
@@ -195,7 +225,7 @@ class UIManager {
     this.elements.logContent.scrollTop = this.elements.logContent.scrollHeight;
   }
 
-  updateAIStrategyIndicators() {
+  updateAIStrategyIndicators () {
     const weights = this.gameEngine.aiStrategyWeights;
 
     // Find the dominant strategy
@@ -212,7 +242,7 @@ class UIManager {
     });
   }
 
-  updateTroopAnimations() {
+  updateTroopAnimations () {
     const state = this.gameEngine.getGameState();
     const { players } = state;
 
@@ -233,7 +263,7 @@ class UIManager {
     this.elements.aiTroopElement.style.left = `${aiTroopPos}%`;
   }
 
-  animateTroopSend(fromSide, toSide, troopCount) {
+  animateTroopSend (fromSide, toSide, troopCount) {
     const battlefield = document.querySelector('.field-content');
 
     for (let i = 0; i < Math.min(troopCount, 5); i++) {
@@ -275,7 +305,7 @@ class UIManager {
     }
   }
 
-  updateButtonStates(gameOver, currentPlayer) {
+  updateButtonStates (gameOver, currentPlayer) {
     const playerRole = this.gameEngine.state.playerRole || 'human';
     const isPlayerTurn = currentPlayer === playerRole;
 
@@ -309,7 +339,7 @@ class UIManager {
     });
   }
 
-  setupEventListeners() {
+  setupEventListeners () {
     // Answer questions button
     this.elements.answerQuestionsBtn.addEventListener('click', () => {
       GameHelpers.playSoundEffect('buttonClick');
@@ -357,6 +387,14 @@ class UIManager {
       this.elements.muteToggleBtn.addEventListener('click', () => {
         GameHelpers.soundMuted = !GameHelpers.soundMuted;
         const isMuted = GameHelpers.soundMuted;
+
+        // Save mute state to localStorage
+        try {
+          localStorage.setItem('ai_vs_human_sound_muted', JSON.stringify(isMuted));
+        } catch (e) {
+          console.log('Failed to save mute state:', e);
+        }
+
         this.elements.muteToggleBtn.classList.toggle('muted', isMuted);
         const icon = this.elements.muteToggleBtn.querySelector('i');
         if (icon) {
@@ -388,14 +426,14 @@ class UIManager {
 
         // Update active state
         this.elements.difficultyButtons.forEach((b) =>
-          b.classList.remove('active')
+          b.classList.remove('active'),
         );
         e.target.classList.add('active');
       });
     });
   }
 
-  showMessage(message, type = 'info') {
+  showMessage (message, type = 'info') {
     const messageDiv = document.createElement('div');
     messageDiv.className = `message ${type}`;
     messageDiv.textContent = message;
@@ -422,18 +460,18 @@ class UIManager {
 
 // Game Controller - Orchestrates game flow
 class GameController {
-  constructor(gameEngine, uiManager) {
+  constructor (gameEngine, uiManager) {
     this.gameEngine = gameEngine;
     this.uiManager = uiManager;
     this.aiThinking = false;
   }
 
-  init() {
+  init () {
     console.log('Game controller initialized');
     this.setupCSSAnimations();
   }
 
-  setupCSSAnimations() {
+  setupCSSAnimations () {
     const style = document.createElement('style');
     style.textContent = `
             @keyframes slideIn {
@@ -454,7 +492,7 @@ class GameController {
   }
 
   // Human actions
-  humanAnswerQuestion(answerIndex) {
+  humanAnswerQuestion (answerIndex) {
     const result = this.gameEngine.answerQuestion(answerIndex);
     this.uiManager.updateUI();
 
@@ -465,21 +503,21 @@ class GameController {
       GameHelpers.playSoundEffect('incorrectAnswer');
       this.uiManager.showMessage(
         'Incorrect answer. Try again next turn!',
-        'error'
+        'error',
       );
     }
 
     this.processAITurn();
   }
 
-  humanSendTroops(troops) {
+  humanSendTroops (troops) {
     const result = this.gameEngine.sendTroops(troops);
     this.uiManager.updateUI();
 
     if (result.damage > 0) {
       this.uiManager.showMessage(
         `Attack successful! Caused ${result.damage} damage`,
-        'success'
+        'success',
       );
     } else {
       this.uiManager.showMessage('Attack was blocked by defense', 'error');
@@ -493,7 +531,7 @@ class GameController {
     this.processAITurn();
   }
 
-  humanDefendHouse() {
+  humanDefendHouse () {
     this.gameEngine.defendHouse();
     this.uiManager.updateUI();
     GameHelpers.playSoundEffect('defend');
@@ -502,7 +540,7 @@ class GameController {
   }
 
   // AI turn processing
-  processAITurn() {
+  processAITurn () {
     const state = this.gameEngine.getGameState();
     console.log('processAITurn called', {
       currentPlayer: state.currentPlayer,
@@ -543,7 +581,7 @@ class GameController {
             this.uiManager.animateTroopSend(
               'ai',
               'human',
-              result.result.troops
+              result.result.troops,
             );
           }
         }
@@ -565,7 +603,7 @@ class GameController {
   }
 
   // End current turn manually
-  endTurn() {
+  endTurn () {
     const success = this.gameEngine.nextTurn();
     if (success) {
       this.uiManager.updateUI();
@@ -574,37 +612,37 @@ class GameController {
   }
 
   // Restart game
-  restartGame() {
+  restartGame () {
     this.gameEngine.init();
     this.uiManager.updateUI();
     this.uiManager.showMessage('New game started!', 'success');
   }
 
   // Set difficulty
-  setDifficulty(difficulty) {
+  setDifficulty (difficulty) {
     this.gameEngine.setDifficulty(difficulty);
     this.uiManager.showMessage(`Difficulty set to ${difficulty}`, 'info');
   }
 
   // Show game over message
-  showGameOver() {
+  showGameOver () {
     const state = this.gameEngine.getGameState();
     let message = '';
     let soundEffect = 'buttonClick';
 
     switch (state.winner) {
-      case 'human':
-        message = `Congratulations! You won with ${state.players.human.score} points!`;
-        soundEffect = 'gameOverWin';
-        break;
-      case 'ai':
-        message = `AI won with ${state.players.ai.score} points. Better luck next time!`;
-        soundEffect = 'gameOverLose';
-        break;
-      case 'draw':
-        message = `It's a draw! Both players scored ${state.players.human.score} points.`;
-        soundEffect = 'defend';
-        break;
+    case 'human':
+      message = `Congratulations! You won with ${state.players.human.score} points!`;
+      soundEffect = 'gameOverWin';
+      break;
+    case 'ai':
+      message = `AI won with ${state.players.ai.score} points. Better luck next time!`;
+      soundEffect = 'gameOverLose';
+      break;
+    case 'draw':
+      message = `It's a draw! Both players scored ${state.players.human.score} points.`;
+      soundEffect = 'defend';
+      break;
     }
 
     GameHelpers.playSoundEffect(soundEffect);

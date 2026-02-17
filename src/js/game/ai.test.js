@@ -136,7 +136,7 @@ describe('AIPlayer', () => {
       const action = ai.generateAction(
         'answer',
         { troops: 10 },
-        { troops: 10 }
+        { troops: 10 },
       );
       expect(action.type).toBe('answer');
       expect(action.confidence).toBeDefined();

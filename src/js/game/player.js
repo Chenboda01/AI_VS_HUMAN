@@ -1,7 +1,7 @@
 // Player class for AI vs HUMAN game
 
 class Player {
-  constructor(type, name = '') {
+  constructor (type, name = '') {
     this.type = type; // 'human' or 'ai'
     this.name = name || (type === 'human' ? 'Human' : 'AI');
     this.score = 0;
@@ -14,7 +14,7 @@ class Player {
     this.traits = this.initializeTraits();
   }
 
-  initializeTraits() {
+  initializeTraits () {
     if (this.type === 'human') {
       return {
         aggression: 0.5,
@@ -33,7 +33,7 @@ class Player {
   }
 
   // Record an action
-  recordAction(action, outcome) {
+  recordAction (action, outcome) {
     this.actionHistory.push({
       turn: this.actionHistory.length + 1,
       action,
@@ -47,7 +47,7 @@ class Player {
   }
 
   // Update player stats
-  updateStats(stats) {
+  updateStats (stats) {
     Object.keys(stats).forEach((key) => {
       if (this[key] !== undefined) {
         this[key] = stats[key];
@@ -56,7 +56,7 @@ class Player {
   }
 
   // Get player state
-  getState() {
+  getState () {
     return {
       type: this.type,
       name: this.name,
@@ -71,12 +71,12 @@ class Player {
   }
 
   // Check if player is alive
-  isAlive() {
+  isAlive () {
     return this.health > 0;
   }
 
   // Reset player for new game
-  reset() {
+  reset () {
     this.score = 0;
     this.health = 100;
     this.defense = 50;
@@ -87,7 +87,7 @@ class Player {
   }
 
   // Calculate player effectiveness (0-100)
-  calculateEffectiveness() {
+  calculateEffectiveness () {
     let effectiveness = 50;
 
     effectiveness += (this.health / 100) * 20;
@@ -99,7 +99,7 @@ class Player {
   }
 
   // Get player's preferred action based on traits
-  getPreferredAction() {
+  getPreferredAction () {
     const rand = Math.random();
 
     if (rand < this.traits.aggression) {
@@ -112,27 +112,27 @@ class Player {
   }
 
   // Adjust traits based on game outcome
-  adjustTraits(outcome) {
+  adjustTraits (outcome) {
     const learningRate = 0.05;
 
     if (outcome.successful) {
       if (outcome.action === 'attack') {
         this.traits.aggression = Math.min(
           1,
-          this.traits.aggression + learningRate
+          this.traits.aggression + learningRate,
         );
       } else if (outcome.action === 'defend') {
         this.traits.caution = Math.min(1, this.traits.caution + learningRate);
       } else if (outcome.action === 'answer') {
         this.traits.intelligence = Math.min(
           1,
-          this.traits.intelligence + learningRate
+          this.traits.intelligence + learningRate,
         );
       }
     } else {
       this.traits.adaptability = Math.min(
         1,
-        this.traits.adaptability + learningRate
+        this.traits.adaptability + learningRate,
       );
     }
   }

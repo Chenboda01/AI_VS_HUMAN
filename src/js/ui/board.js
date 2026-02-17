@@ -1,21 +1,21 @@
 // Board UI management for AI vs HUMAN game
 
 class BoardManager {
-  constructor(gameEngine) {
+  constructor (gameEngine) {
     this.gameEngine = gameEngine;
     this.animations = new Map();
     this.animationId = 0;
   }
 
   // Initialize board
-  init() {
+  init () {
     this.setupBoardElements();
     this.setupAnimations();
     this.updateBoard();
   }
 
   // Cache board elements
-  setupBoardElements() {
+  setupBoardElements () {
     this.elements = {
       humanHouse: document.querySelector('.human-house'),
       aiHouse: document.querySelector('.ai-house'),
@@ -43,7 +43,7 @@ class BoardManager {
   }
 
   // Setup CSS animations
-  setupAnimations() {
+  setupAnimations () {
     const style = document.createElement('style');
     style.textContent = `
             @keyframes troopMarch {
@@ -72,7 +72,7 @@ class BoardManager {
   }
 
   // Update entire board
-  updateBoard() {
+  updateBoard () {
     const state = this.gameEngine.getGameState();
     this.updateHouses(state);
     this.updateTroops(state);
@@ -82,7 +82,7 @@ class BoardManager {
   }
 
   // Update house visuals
-  updateHouses(state) {
+  updateHouses (state) {
     const { players } = state;
 
     // Human house
@@ -113,7 +113,7 @@ class BoardManager {
   }
 
   // Update troop positions and visuals
-  updateTroops(state) {
+  updateTroops (state) {
     const { players } = state;
 
     // Calculate positions based on game state
@@ -146,7 +146,7 @@ class BoardManager {
   }
 
   // Update stat displays
-  updateStats(state) {
+  updateStats (state) {
     const { players } = state;
 
     // Update scores
@@ -156,15 +156,15 @@ class BoardManager {
     // Update health (with color coding)
     this.elements.healthBars.human.textContent = Math.max(
       0,
-      players.human.health
+      players.human.health,
     );
     this.elements.healthBars.ai.textContent = Math.max(0, players.ai.health);
 
     this.elements.healthBars.human.style.color = this.getHealthColor(
-      players.human.health
+      players.human.health,
     );
     this.elements.healthBars.ai.style.color = this.getHealthColor(
-      players.ai.health
+      players.ai.health,
     );
 
     // Update defense
@@ -177,7 +177,7 @@ class BoardManager {
   }
 
   // Update battle log
-  updateBattleLog(logEntries) {
+  updateBattleLog (logEntries) {
     this.elements.battleLog.innerHTML = '';
 
     const recentEntries = logEntries.slice(-8);
@@ -204,7 +204,7 @@ class BoardManager {
   }
 
   // Update turn indicator
-  updateTurnIndicator(currentPlayer) {
+  updateTurnIndicator (currentPlayer) {
     const indicator = document.querySelector('.turn-indicator');
     const playerText = document.getElementById('current-player');
 
@@ -220,7 +220,7 @@ class BoardManager {
   }
 
   // Animate troop movement
-  animateTroopMovement(fromPlayer, toPlayer, count) {
+  animateTroopMovement (fromPlayer, toPlayer, count) {
     const troop = document.createElement('div');
     troop.className = `troop ${fromPlayer}-troop-animated`;
     troop.textContent = fromPlayer === 'human' ? '🚶' : '🤖';
@@ -250,7 +250,7 @@ class BoardManager {
   }
 
   // Animate damage flash
-  animateDamageFlash(player) {
+  animateDamageFlash (player) {
     const house =
       player === 'human' ? this.elements.humanHouse : this.elements.aiHouse;
     house.style.animation = 'damageFlash 0.5s ease';
@@ -261,19 +261,19 @@ class BoardManager {
   }
 
   // Animate house
-  animateHouse(houseElement, animationType) {
+  animateHouse (houseElement, animationType) {
     if (animationType === 'pulse') {
       houseElement.style.animation = 'housePulse 1s infinite';
     }
   }
 
   // Stop house animation
-  stopHouseAnimation(houseElement) {
+  stopHouseAnimation (houseElement) {
     houseElement.style.animation = '';
   }
 
   // Show score popup
-  showScorePopup(player, points, x, y) {
+  showScorePopup (player, points, x, y) {
     const popup = document.createElement('div');
     popup.textContent = `+${points}`;
     popup.style.cssText = `
@@ -295,14 +295,14 @@ class BoardManager {
   }
 
   // Get color based on health value
-  getHealthColor(health) {
+  getHealthColor (health) {
     if (health > 70) return '#10b981';
     if (health > 30) return '#f59e0b';
     return '#ef4444';
   }
 
   // Clear all animations
-  clearAnimations() {
+  clearAnimations () {
     this.animations.forEach((animation, id) => {
       cancelAnimationFrame(id);
     });

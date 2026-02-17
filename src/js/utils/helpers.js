@@ -2,7 +2,14 @@
 
 const GameHelpers = {
   // Sound control
-  soundMuted: false,
+  soundMuted: (() => {
+    try {
+      const saved = localStorage.getItem('ai_vs_human_sound_muted');
+      return saved ? JSON.parse(saved) : false;
+    } catch (e) {
+      return false;
+    }
+  })(),
 
   // Format number with commas
   formatNumber: (num) => {
@@ -38,7 +45,7 @@ const GameHelpers = {
   // Debounce function
   debounce: (func, wait) => {
     let timeout;
-    return function executedFunction(...args) {
+    return function executedFunction (...args) {
       const later = () => {
         clearTimeout(timeout);
         func(...args);
@@ -58,7 +65,7 @@ const GameHelpers = {
   // Check if running on mobile
   isMobile: () => {
     return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
-      navigator.userAgent
+      navigator.userAgent,
     );
   },
 
@@ -164,57 +171,57 @@ const GameHelpers = {
       let volume = 0.3;
 
       switch (effectName) {
-        case 'buttonClick':
-          frequency = 523.25;
-          duration = 0.1;
-          type = 'sine';
-          volume = 0.2;
-          break;
-        case 'correctAnswer':
-          frequency = 659.25;
-          duration = 0.3;
-          type = 'triangle';
-          volume = 0.4;
-          break;
-        case 'incorrectAnswer':
-          frequency = 220;
-          duration = 0.4;
-          type = 'square';
-          volume = 0.3;
-          break;
-        case 'troopSend':
-          frequency = 349.23;
-          duration = 0.5;
-          type = 'sawtooth';
-          volume = 0.25;
-          break;
-        case 'defend':
-          frequency = 392;
-          duration = 0.6;
-          type = 'sine';
-          volume = 0.35;
-          break;
-        case 'gameOverWin':
-          frequency = 523.25;
-          duration = 0.8;
-          type = 'sine';
-          volume = 0.5;
-          break;
-        case 'gameOverLose':
-          frequency = 220;
-          duration = 1.0;
-          type = 'sawtooth';
-          volume = 0.4;
-          break;
-        case 'troopExplosion':
-          frequency = 150;
-          duration = 0.3;
-          type = 'square';
-          volume = 0.3;
-          break;
-        default:
-          frequency = 440;
-          duration = 0.2;
+      case 'buttonClick':
+        frequency = 523.25;
+        duration = 0.1;
+        type = 'sine';
+        volume = 0.2;
+        break;
+      case 'correctAnswer':
+        frequency = 659.25;
+        duration = 0.3;
+        type = 'triangle';
+        volume = 0.4;
+        break;
+      case 'incorrectAnswer':
+        frequency = 220;
+        duration = 0.4;
+        type = 'square';
+        volume = 0.3;
+        break;
+      case 'troopSend':
+        frequency = 349.23;
+        duration = 0.5;
+        type = 'sawtooth';
+        volume = 0.25;
+        break;
+      case 'defend':
+        frequency = 392;
+        duration = 0.6;
+        type = 'sine';
+        volume = 0.35;
+        break;
+      case 'gameOverWin':
+        frequency = 523.25;
+        duration = 0.8;
+        type = 'sine';
+        volume = 0.5;
+        break;
+      case 'gameOverLose':
+        frequency = 220;
+        duration = 1.0;
+        type = 'sawtooth';
+        volume = 0.4;
+        break;
+      case 'troopExplosion':
+        frequency = 150;
+        duration = 0.3;
+        type = 'square';
+        volume = 0.3;
+        break;
+      default:
+        frequency = 440;
+        duration = 0.2;
       }
 
       // Create oscillator and gain node
@@ -230,7 +237,7 @@ const GameHelpers = {
       gainNode.gain.setValueAtTime(volume, audioContext.currentTime);
       gainNode.gain.exponentialRampToValueAtTime(
         0.001,
-        audioContext.currentTime + duration
+        audioContext.currentTime + duration,
       );
 
       oscillator.start(audioContext.currentTime);
