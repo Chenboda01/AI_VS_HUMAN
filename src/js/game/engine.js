@@ -1,6 +1,6 @@
 // Game Engine - Core game state and turn management
 class GameEngine {
-  constructor () {
+  constructor() {
     this.state = {
       currentTurn: 1,
       maxTurns: 20,
@@ -67,12 +67,12 @@ class GameEngine {
         correct: 2,
       },
       {
-        question: 'Which element is the most abundant in Earth\'s atmosphere?',
+        question: "Which element is the most abundant in Earth's atmosphere?",
         answers: ['Oxygen', 'Carbon', 'Nitrogen', 'Hydrogen'],
         correct: 2,
       },
       {
-        question: 'Who wrote \'Romeo and Juliet\'?',
+        question: "Who wrote 'Romeo and Juliet'?",
         answers: [
           'Charles Dickens',
           'William Shakespeare',
@@ -94,7 +94,7 @@ class GameEngine {
   }
 
   // Initialize a new game
-  init () {
+  init() {
     this.state = {
       currentTurn: 1,
       maxTurns: 20,
@@ -125,7 +125,7 @@ class GameEngine {
     };
 
     this.currentQuestionIndex = Math.floor(
-      Math.random() * this.questions.length,
+      Math.random() * this.questions.length
     );
     this.battleLog = ['Game started! Human goes first.'];
     this.aiStrategyWeights = { answer: 0.4, attack: 0.4, defend: 0.2 };
@@ -135,17 +135,20 @@ class GameEngine {
   }
 
   // Get current game state
-  getGameState () {
+  getGameState() {
     return {
       ...this.state,
-      players: { ...this.players },
+      players: {
+        human: { ...this.players.human },
+        ai: { ...this.players.ai },
+      },
       currentQuestion: this.questions[this.currentQuestionIndex],
       battleLog: [...this.battleLog],
     };
   }
 
   // Switch to next player/turn
-  nextTurn () {
+  nextTurn() {
     if (this.state.gameOver) return false;
 
     if (this.state.currentPlayer === 'human') {
@@ -160,17 +163,22 @@ class GameEngine {
       }
     }
 
-    this.players.human.houseDefended = false;
-    this.players.ai.houseDefended = false;
+    // Reset house defense for the player whose turn is starting
+    // (defense only lasts for one opponent's turn)
+    if (this.state.currentPlayer === 'ai') {
+      this.players.ai.houseDefended = false;
+    } else {
+      this.players.human.houseDefended = false;
+    }
 
     this.logEvent(
-      `Turn ${this.state.currentTurn}: ${this.state.currentPlayer.toUpperCase()}'s turn`,
+      `Turn ${this.state.currentTurn}: ${this.state.currentPlayer.toUpperCase()}'s turn`
     );
     return true;
   }
 
   // Human action: Answer current question
-  answerQuestion (answerIndex) {
+  answerQuestion(answerIndex) {
     if (this.state.currentPlayer !== 'human' || this.state.gameOver) {
       return false;
     }
@@ -184,7 +192,7 @@ class GameEngine {
       this.players.human.knowledge += 5;
       this.players.human.score += points;
       this.logEvent(
-        `Human answered correctly! +${points} points. Knowledge increased.`,
+        `Human answered correctly! +${points} points. Knowledge increased.`
       );
     } else {
       this.logEvent('Human answered incorrectly. No points gained.');
@@ -198,7 +206,7 @@ class GameEngine {
   }
 
   // Human action: Send troops to attack AI
-  sendTroops (humanTroopsCount) {
+  sendTroops(humanTroopsCount) {
     if (this.state.currentPlayer !== 'human' || this.state.gameOver) {
       return false;
     }
@@ -215,7 +223,7 @@ class GameEngine {
     if (this.players.ai.houseDefended) {
       damage = Math.floor(damage * 0.5);
       this.logEvent(
-        `Human sent ${troops} troops! AI's defense reduced damage by 50%.`,
+        `Human sent ${troops} troops! AI's defense reduced damage by 50%.`
       );
     } else {
       this.logEvent(`Human sent ${troops} troops! Attacking AI's house.`);
@@ -228,7 +236,7 @@ class GameEngine {
     if (actualDamage > 0) {
       this.logEvent(`Attack successful! AI lost ${actualDamage} health.`);
     } else {
-      this.logEvent('Attack blocked by AI\'s defense.');
+      this.logEvent("Attack blocked by AI's defense.");
     }
 
     this.nextTurn();
@@ -236,7 +244,7 @@ class GameEngine {
   }
 
   // Human action: Defend house
-  defendHouse () {
+  defendHouse() {
     if (this.state.currentPlayer !== 'human' || this.state.gameOver) {
       return false;
     }
@@ -250,22 +258,22 @@ class GameEngine {
   }
 
   // AI makes a decision based on strategy weights
-  aiTakeTurn () {
+  aiTakeTurn() {
     if (this.state.currentPlayer !== 'ai' || this.state.gameOver) return false;
 
     const strategy = this.chooseAIStrategy();
     let result;
 
     switch (strategy) {
-    case 'answer':
-      result = this.aiAnswerQuestion();
-      break;
-    case 'attack':
-      result = this.aiSendTroops();
-      break;
-    case 'defend':
-      result = this.aiDefendHouse();
-      break;
+      case 'answer':
+        result = this.aiAnswerQuestion();
+        break;
+      case 'attack':
+        result = this.aiSendTroops();
+        break;
+      case 'defend':
+        result = this.aiDefendHouse();
+        break;
     }
 
     this.updateAIStrategyWeights(strategy, result);
@@ -274,7 +282,7 @@ class GameEngine {
   }
 
   // AI chooses strategy based on weights and game state
-  chooseAIStrategy () {
+  chooseAIStrategy() {
     const weights = this.aiStrategyWeights;
 
     if (this.players.ai.health < 30) {
@@ -300,7 +308,7 @@ class GameEngine {
   }
 
   // AI answers question
-  aiAnswerQuestion () {
+  aiAnswerQuestion() {
     const aiCorrectChance = this.getAICorrectChance();
     const isCorrect = Math.random() < aiCorrectChance;
 
@@ -309,7 +317,7 @@ class GameEngine {
       this.players.ai.knowledge += 5;
       this.players.ai.score += points;
       this.logEvent(
-        `AI answered correctly! +${points} points. Knowledge increased.`,
+        `AI answered correctly! +${points} points. Knowledge increased.`
       );
     } else {
       this.logEvent('AI answered incorrectly. No points gained.');
@@ -321,8 +329,8 @@ class GameEngine {
   }
 
   // AI sends troops
-  aiSendTroops () {
-    const maxTroops = Math.min(5, this.players.ai.troops);
+  aiSendTroops() {
+    const maxTroops = Math.min(this.getAIMaxTroops(), this.players.ai.troops);
     const troops = Math.floor(maxTroops * (0.3 + Math.random() * 0.7));
 
     if (troops <= 0) {
@@ -336,7 +344,7 @@ class GameEngine {
     if (this.players.human.houseDefended) {
       damage = Math.floor(damage * 0.5);
       this.logEvent(
-        `AI sent ${troops} troops! Human's defense reduced damage by 50%.`,
+        `AI sent ${troops} troops! Human's defense reduced damage by 50%.`
       );
     } else {
       this.logEvent(`AI sent ${troops} troops! Attacking human's house.`);
@@ -349,14 +357,14 @@ class GameEngine {
     if (actualDamage > 0) {
       this.logEvent(`Attack successful! Human lost ${actualDamage} health.`);
     } else {
-      this.logEvent('Attack blocked by human\'s defense.');
+      this.logEvent("Attack blocked by human's defense.");
     }
 
     return { troops, damage: actualDamage };
   }
 
   // AI defends house
-  aiDefendHouse () {
+  aiDefendHouse() {
     this.players.ai.houseDefended = true;
     this.players.ai.defense += 20;
     this.logEvent('AI fortified their house! Defense increased.');
@@ -364,7 +372,7 @@ class GameEngine {
   }
 
   // Update AI strategy weights based on outcome
-  updateAIStrategyWeights (strategy, result) {
+  updateAIStrategyWeights(strategy, result) {
     const adjustment = 0.05;
 
     if (strategy === 'answer' && result.success) {
@@ -385,19 +393,25 @@ class GameEngine {
   }
 
   // Get AI's chance to answer correctly based on difficulty
-  getAICorrectChance () {
-    const baseChance = { easy: 0.6, medium: 0.75, hard: 0.9 };
+  getAICorrectChance() {
+    const baseChance = { easy: 0.6, medium: 0.75, hard: 0.9, impossible: 0.95 };
     return baseChance[this.state.difficulty] || 0.75;
   }
 
+  // Get AI's maximum troop count per attack based on difficulty
+  getAIMaxTroops() {
+    const maxTroops = { easy: 3, medium: 5, hard: 6, impossible: 8 };
+    return maxTroops[this.state.difficulty] || 5;
+  }
+
   // End the game and determine winner
-  endGame () {
+  endGame() {
     this.state.gameOver = true;
 
     if (this.players.human.score > this.players.ai.score) {
       this.state.winner = 'human';
       this.logEvent(
-        `Game over! Human wins with ${this.players.human.score} points!`,
+        `Game over! Human wins with ${this.players.human.score} points!`
       );
     } else if (this.players.ai.score > this.players.human.score) {
       this.state.winner = 'ai';
@@ -405,13 +419,13 @@ class GameEngine {
     } else {
       this.state.winner = 'draw';
       this.logEvent(
-        `Game over! It's a draw with ${this.players.human.score} points each!`,
+        `Game over! It's a draw with ${this.players.human.score} points each!`
       );
     }
   }
 
   // Add message to battle log
-  logEvent (message) {
+  logEvent(message) {
     const timestamp = new Date().toLocaleTimeString();
     this.battleLog.push(`[${timestamp}] ${message}`);
 
@@ -421,7 +435,7 @@ class GameEngine {
   }
 
   // Set which side the player controls (human or ai)
-  setPlayerRole (role) {
+  setPlayerRole(role) {
     if (['human', 'ai'].includes(role)) {
       this.state.playerRole = role;
       this.logEvent(`Player now controls ${role.toUpperCase()} side`);
@@ -431,19 +445,36 @@ class GameEngine {
   }
 
   // Swap human and AI player data (used when player chooses to control AI side)
-  swapPlayerControls () {
+  swapPlayerControls() {
     const temp = this.players.human;
     this.players.human = this.players.ai;
     this.players.ai = temp;
     this.logEvent(
-      'Player controls swapped - human side is now AI-controlled and vice versa',
+      'Player controls swapped - human side is now AI-controlled and vice versa'
     );
   }
 
   // Set game difficulty
-  setDifficulty (difficulty) {
-    if (['easy', 'medium', 'hard'].includes(difficulty)) {
+  setDifficulty(difficulty) {
+    if (['easy', 'medium', 'hard', 'impossible'].includes(difficulty)) {
       this.state.difficulty = difficulty;
+      // Adjust AI strategy weights based on difficulty
+      switch (difficulty) {
+        case 'easy':
+          this.aiStrategyWeights = { answer: 0.3, attack: 0.3, defend: 0.4 };
+          break;
+        case 'medium':
+          this.aiStrategyWeights = { answer: 0.4, attack: 0.4, defend: 0.2 };
+          break;
+        case 'hard':
+          this.aiStrategyWeights = { answer: 0.5, attack: 0.4, defend: 0.1 };
+          break;
+        case 'impossible':
+          this.aiStrategyWeights = { answer: 0.3, attack: 0.6, defend: 0.1 };
+          break;
+        default:
+          this.aiStrategyWeights = { answer: 0.4, attack: 0.4, defend: 0.2 };
+      }
       this.logEvent(`Difficulty set to ${difficulty}`);
       return true;
     }

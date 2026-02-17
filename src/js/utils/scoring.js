@@ -1,7 +1,7 @@
 // Scoring utilities for AI vs HUMAN game
 
 class ScoringSystem {
-  constructor () {
+  constructor() {
     this.scoreWeights = {
       correctAnswer: 10,
       damageDealt: 0.5, // Points per damage dealt
@@ -12,7 +12,7 @@ class ScoringSystem {
   }
 
   // Calculate score for a player based on various factors
-  calculatePlayerScore (playerState) {
+  calculatePlayerScore(playerState) {
     let score = playerState.score; // Base score from game engine
 
     // Bonus for knowledge
@@ -28,17 +28,17 @@ class ScoringSystem {
   }
 
   // Calculate damage score
-  calculateDamageScore (damageDealt) {
+  calculateDamageScore(damageDealt) {
     return damageDealt * this.scoreWeights.damageDealt;
   }
 
   // Calculate answer score
-  calculateAnswerScore (isCorrect) {
+  calculateAnswerScore(isCorrect) {
     return isCorrect ? this.scoreWeights.correctAnswer : 0;
   }
 
   // Calculate defense score
-  calculateDefenseScore (defenseValue, wasAttacked) {
+  calculateDefenseScore(defenseValue, wasAttacked) {
     let score = 0;
     if (wasAttacked) {
       // Bonus for successfully defending
@@ -49,20 +49,20 @@ class ScoringSystem {
   }
 
   // Determine winner between two players
-  determineWinner (humanScore, aiScore) {
+  determineWinner(humanScore, aiScore) {
     if (humanScore > aiScore) return 'human';
     if (aiScore > humanScore) return 'ai';
     return 'draw';
   }
 
   // Calculate win margin percentage
-  calculateWinMargin (winnerScore, loserScore) {
+  calculateWinMargin(winnerScore, loserScore) {
     if (loserScore === 0) return 100;
     return Math.round(((winnerScore - loserScore) / loserScore) * 100);
   }
 
   // Get performance rating (0-100)
-  calculatePerformanceRating (playerState, totalTurns) {
+  calculatePerformanceRating(playerState, totalTurns) {
     let rating = 50; // Base rating
 
     // Score contribution (max 30 points)

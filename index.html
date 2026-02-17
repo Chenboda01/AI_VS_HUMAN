@@ -15,11 +15,24 @@
     />
   </head>
   <body>
+    <!-- Skip to content link for screen readers -->
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+
     <!-- Role Selection Modal -->
-    <div id="role-selection-modal" class="modal-overlay" style="display: flex">
+    <div
+      id="role-selection-modal"
+      class="modal-overlay"
+      style="display: flex"
+      aria-modal="true"
+      aria-hidden="false"
+      aria-labelledby="role-selection-title"
+      aria-describedby="role-selection-description"
+    >
       <div class="modal-content">
-        <h2><i class="fas fa-user-circle"></i> Choose Your Side</h2>
-        <p class="modal-description">
+        <h2 id="role-selection-title">
+          <i class="fas fa-user-circle"></i> Choose Your Side
+        </h2>
+        <p class="modal-description" id="role-selection-description">
           Select which side you want to play as. The other side will be
           controlled by AI.
         </p>
@@ -47,7 +60,12 @@
                 <i class="fas fa-check-circle"></i> Compete against AI opponent
               </div>
             </div>
-            <button class="role-select-btn" data-role="human">
+            <button
+              class="role-select-btn"
+              data-role="human"
+              aria-label="Play as Human side"
+              autofocus
+            >
               Play as Human
             </button>
           </div>
@@ -73,7 +91,13 @@
                 <i class="fas fa-check-circle"></i> Challenge human opponent
               </div>
             </div>
-            <button class="role-select-btn" data-role="ai">Play as AI</button>
+            <button
+              class="role-select-btn"
+              data-role="ai"
+              aria-label="Play as AI side"
+            >
+              Play as AI
+            </button>
           </div>
         </div>
 
@@ -86,7 +110,7 @@
       </div>
     </div>
 
-    <div class="container">
+    <div class="container" id="main-content">
       <header class="header">
         <h1>
           <i class="fas fa-robot"></i> AI <span class="vs">VS</span> HUMAN
@@ -96,13 +120,23 @@
       </header>
 
       <div class="game-info">
-        <div class="turn-indicator">
+        <div class="turn-indicator" aria-live="polite" aria-atomic="true">
           <span id="current-player">Human</span>'s Turn
           <div class="turn-counter">
             Turn: <span id="turn-number">1</span>/20
           </div>
         </div>
-        <div class="score-board">
+        <div class="sound-control">
+          <button
+            id="mute-toggle"
+            class="sound-btn"
+            title="Toggle sound effects"
+            aria-label="Toggle sound effects"
+          >
+            <i class="fas fa-volume-up"></i> Sound On
+          </button>
+        </div>
+        <div class="score-board" aria-live="polite" aria-atomic="true">
           <div class="score human-score">
             <i class="fas fa-user"></i> Human: <span id="human-score">0</span>
           </div>
@@ -136,15 +170,27 @@
           <div class="action-panel">
             <h3>Your Actions</h3>
             <div class="actions">
-              <button class="action-btn" id="answer-questions">
+              <button
+                class="action-btn"
+                id="answer-questions"
+                aria-label="Answer questions to gain knowledge points"
+              >
                 <i class="fas fa-brain"></i> Answer Questions<br />
                 <small>Gain knowledge points</small>
               </button>
-              <button class="action-btn" id="send-troops">
+              <button
+                class="action-btn"
+                id="send-troops"
+                aria-label="Send troops to attack AI's house"
+              >
                 <i class="fas fa-fighter-jet"></i> Send Troops<br />
                 <small>Attack AI's house</small>
               </button>
-              <button class="action-btn" id="defend-house">
+              <button
+                class="action-btn"
+                id="defend-house"
+                aria-label="Defend house to boost defense"
+              >
                 <i class="fas fa-shield-alt"></i> Defend House<br />
                 <small>Boost defense</small>
               </button>
@@ -154,10 +200,18 @@
               <h4>Current Question:</h4>
               <p id="current-question">What is the capital of France?</p>
               <div class="answer-options">
-                <button class="answer-btn">Paris</button>
-                <button class="answer-btn">London</button>
-                <button class="answer-btn">Berlin</button>
-                <button class="answer-btn">Madrid</button>
+                <button class="answer-btn" aria-label="Select answer: Paris">
+                  Paris
+                </button>
+                <button class="answer-btn" aria-label="Select answer: London">
+                  London
+                </button>
+                <button class="answer-btn" aria-label="Select answer: Berlin">
+                  Berlin
+                </button>
+                <button class="answer-btn" aria-label="Select answer: Madrid">
+                  Madrid
+                </button>
               </div>
             </div>
           </div>
@@ -169,17 +223,25 @@
             <h3><i class="fas fa-battle-net"></i> Battle Field</h3>
           </div>
           <div class="field-content">
-            <div class="house human-house">
+            <div class="house human-house" aria-label="Human house">
               <i class="fas fa-home"></i>
               <div class="house-label">Human House</div>
             </div>
 
             <div class="troop-movement">
-              <div class="troop human-troop" id="human-troop-1">🚶</div>
-              <div class="troop ai-troop" id="ai-troop-1">🤖</div>
+              <div
+                class="troop human-troop"
+                id="human-troop-1"
+                aria-label="Human troop"
+              >
+                🚶
+              </div>
+              <div class="troop ai-troop" id="ai-troop-1" aria-label="AI troop">
+                🤖
+              </div>
             </div>
 
-            <div class="house ai-house">
+            <div class="house ai-house" aria-label="AI house">
               <i class="fas fa-robot"></i>
               <div class="house-label">AI House</div>
             </div>
@@ -187,7 +249,7 @@
 
           <div class="battle-log">
             <h4>Battle Log</h4>
-            <div id="log-content">
+            <div id="log-content" aria-live="polite" aria-atomic="true">
               <div class="log-entry">Game started! Human goes first.</div>
             </div>
           </div>
@@ -235,22 +297,41 @@
           <div class="difficulty-selector">
             <h4>Difficulty</h4>
             <div class="difficulty-buttons">
-              <button class="diff-btn active">Easy</button>
-              <button class="diff-btn">Medium</button>
-              <button class="diff-btn">Hard</button>
+              <button
+                class="diff-btn active"
+                aria-label="Set difficulty to Easy"
+              >
+                Easy
+              </button>
+              <button class="diff-btn" aria-label="Set difficulty to Medium">
+                Medium
+              </button>
+              <button class="diff-btn" aria-label="Set difficulty to Hard">
+                Hard
+              </button>
+              <button
+                class="diff-btn"
+                aria-label="Set difficulty to Impossible"
+              >
+                Impossible
+              </button>
             </div>
           </div>
         </div>
       </div>
 
       <div class="controls">
-        <button id="end-turn" class="control-btn">
+        <button id="end-turn" class="control-btn" aria-label="End current turn">
           <i class="fas fa-forward"></i> End Turn
         </button>
-        <button id="restart-game" class="control-btn">
+        <button id="restart-game" class="control-btn" aria-label="Restart game">
           <i class="fas fa-redo"></i> Restart Game
         </button>
-        <button id="how-to-play" class="control-btn">
+        <button
+          id="how-to-play"
+          class="control-btn"
+          aria-label="Open how to play instructions"
+        >
           <i class="fas fa-question-circle"></i> How to Play
         </button>
       </div>

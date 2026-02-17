@@ -1,20 +1,20 @@
 // Controls UI management for AI vs HUMAN game
 
 class ControlsManager {
-  constructor (gameController) {
+  constructor(gameController) {
     this.gameController = gameController;
     this.buttons = {};
   }
 
   // Initialize controls
-  init () {
+  init() {
     this.cacheButtons();
     this.setupEventListeners();
     this.updateButtonStates();
   }
 
   // Cache button elements
-  cacheButtons () {
+  cacheButtons() {
     this.buttons = {
       answerQuestions: document.getElementById('answer-questions'),
       sendTroops: document.getElementById('send-troops'),
@@ -28,7 +28,7 @@ class ControlsManager {
   }
 
   // Setup event listeners
-  setupEventListeners () {
+  setupEventListeners() {
     // Action buttons
     this.buttons.answerQuestions.addEventListener('click', () => {
       this.gameController.showQuestionPanel();
@@ -77,7 +77,7 @@ class ControlsManager {
   }
 
   // Update button states based on game state
-  updateButtonStates (gameState) {
+  updateButtonStates(gameState) {
     const isHumanTurn = gameState && gameState.currentPlayer === 'human';
     const gameOver = gameState && gameState.gameOver;
 
@@ -112,7 +112,7 @@ class ControlsManager {
   }
 
   // Update difficulty buttons
-  updateDifficultyButtons (activeDifficulty) {
+  updateDifficultyButtons(activeDifficulty) {
     this.buttons.difficultyButtons.forEach((btn) => {
       btn.classList.remove('active');
       if (btn.textContent.toLowerCase() === activeDifficulty) {
@@ -122,12 +122,12 @@ class ControlsManager {
   }
 
   // Set difficulty
-  setDifficulty (difficulty) {
+  setDifficulty(difficulty) {
     this.gameController.setDifficulty(difficulty);
   }
 
   // Toggle how to play panel
-  toggleHowToPlay () {
+  toggleHowToPlay() {
     const rulesPanel = document.querySelector('.rules');
     if (rulesPanel) {
       rulesPanel.style.display =
@@ -136,7 +136,7 @@ class ControlsManager {
   }
 
   // Handle keyboard shortcuts
-  handleKeyboardShortcut (event) {
+  handleKeyboardShortcut(event) {
     // Only handle if not in input field
     if (
       event.target.tagName === 'INPUT' ||
@@ -146,52 +146,52 @@ class ControlsManager {
     }
 
     switch (event.key.toLowerCase()) {
-    case '1':
-    case 'a':
-      if (!this.buttons.answerQuestions.disabled) {
-        this.gameController.showQuestionPanel();
-      }
-      break;
+      case '1':
+      case 'a':
+        if (!this.buttons.answerQuestions.disabled) {
+          this.gameController.showQuestionPanel();
+        }
+        break;
 
-    case '2':
-    case 's':
-      if (!this.buttons.sendTroops.disabled) {
-        this.gameController.sendTroopsAction();
-      }
-      break;
+      case '2':
+      case 's':
+        if (!this.buttons.sendTroops.disabled) {
+          this.gameController.sendTroopsAction();
+        }
+        break;
 
-    case '3':
-    case 'd':
-      if (!this.buttons.defendHouse.disabled) {
-        this.gameController.defendHouseAction();
-      }
-      break;
+      case '3':
+      case 'd':
+        if (!this.buttons.defendHouse.disabled) {
+          this.gameController.defendHouseAction();
+        }
+        break;
 
-    case ' ':
-    case 'enter':
-      if (!this.buttons.endTurn.disabled) {
-        this.gameController.endTurnAction();
-      }
-      break;
+      case ' ':
+      case 'enter':
+        if (!this.buttons.endTurn.disabled) {
+          this.gameController.endTurnAction();
+        }
+        break;
 
-    case 'r':
-      if (event.ctrlKey || event.metaKey) {
-        this.gameController.restartGameAction();
-      }
-      break;
+      case 'r':
+        if (event.ctrlKey || event.metaKey) {
+          this.gameController.restartGameAction();
+        }
+        break;
 
-    case 'h':
-      this.toggleHowToPlay();
-      break;
+      case 'h':
+        this.toggleHowToPlay();
+        break;
 
-    case 'escape':
-      this.hideQuestionPanel();
-      break;
+      case 'escape':
+        this.hideQuestionPanel();
+        break;
     }
   }
 
   // Show question panel
-  showQuestionPanel () {
+  showQuestionPanel() {
     const questionPanel = document.querySelector('.questions-panel');
     if (questionPanel) {
       questionPanel.style.display = 'block';
@@ -199,7 +199,7 @@ class ControlsManager {
   }
 
   // Hide question panel
-  hideQuestionPanel () {
+  hideQuestionPanel() {
     const questionPanel = document.querySelector('.questions-panel');
     if (questionPanel) {
       questionPanel.style.display = 'none';
@@ -207,7 +207,7 @@ class ControlsManager {
   }
 
   // Show feedback message
-  showFeedback (message, type = 'info') {
+  showFeedback(message, type = 'info') {
     // Create feedback element
     const feedback = document.createElement('div');
     feedback.className = `feedback feedback-${type}`;
@@ -234,7 +234,7 @@ class ControlsManager {
   }
 
   // Add CSS for animations
-  addAnimationStyles () {
+  addAnimationStyles() {
     if (!document.querySelector('#controls-animations')) {
       const style = document.createElement('style');
       style.id = 'controls-animations';

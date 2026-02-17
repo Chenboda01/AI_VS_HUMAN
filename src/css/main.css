@@ -35,6 +35,27 @@ body {
   padding: 20px;
 }
 
+/* Skip link for accessibility */
+.skip-link {
+  position: absolute;
+  top: -40px;
+  left: 0;
+  background: var(--primary-blue);
+  color: white;
+  padding: 8px 16px;
+  border-radius: 4px;
+  text-decoration: none;
+  font-weight: 500;
+  z-index: 1000;
+  transition: top 0.3s ease;
+}
+
+.skip-link:focus {
+  top: 10px;
+  outline: 2px solid var(--primary-yellow);
+  outline-offset: 2px;
+}
+
 /* Header */
 .header {
   text-align: center;
@@ -92,6 +113,8 @@ body {
   padding: 12px 24px;
   border-radius: 8px;
   border-left: 4px solid var(--human-color);
+  animation: turnPulse 2s infinite ease-in-out;
+  transition: border-left-color 0.3s ease;
 }
 
 #current-player {
@@ -230,9 +253,26 @@ body {
   align-items: flex-start;
 }
 
-.action-btn:hover {
+.action-btn:hover:not(:disabled) {
   transform: translateY(-3px);
   box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4);
+}
+
+.action-btn:active {
+  transform: translateY(-1px) scale(0.98);
+}
+
+.action-btn:disabled,
+.action-btn[disabled] {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.action-btn:focus-visible {
+  outline: 2px solid var(--primary-blue);
+  outline-offset: 2px;
 }
 
 .action-btn i {
@@ -250,7 +290,7 @@ body {
   background: linear-gradient(135deg, var(--primary-red), #dc2626);
 }
 
-#send-troops:hover {
+#send-troops:hover:not(:disabled) {
   box-shadow: 0 6px 20px rgba(239, 68, 68, 0.4);
 }
 
@@ -258,7 +298,7 @@ body {
   background: linear-gradient(135deg, var(--primary-green), #16a34a);
 }
 
-#defend-house:hover {
+#defend-house:hover:not(:disabled) {
   box-shadow: 0 6px 20px rgba(34, 197, 94, 0.4);
 }
 
@@ -300,9 +340,25 @@ body {
   transition: all 0.2s ease;
 }
 
-.answer-btn:hover {
+.answer-btn:hover:not(:disabled) {
   background: rgba(59, 130, 246, 0.3);
   border-color: var(--human-color);
+}
+
+.answer-btn:active {
+  transform: scale(0.97);
+}
+
+.answer-btn:disabled,
+.answer-btn[disabled] {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.answer-btn:focus-visible {
+  outline: 2px solid var(--human-color);
+  outline-offset: 2px;
 }
 
 /* Battle Field */
@@ -499,6 +555,27 @@ body {
   transition: all 0.2s ease;
 }
 
+.diff-btn:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.1);
+  transform: translateY(-2px);
+}
+
+.diff-btn:active {
+  transform: translateY(0) scale(0.98);
+}
+
+.diff-btn:disabled,
+.diff-btn[disabled] {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.diff-btn:focus-visible {
+  outline: 2px solid var(--ai-color);
+  outline-offset: 2px;
+}
+
 .diff-btn.active {
   background: rgba(239, 68, 68, 0.3);
   border-color: var(--ai-color);
@@ -526,12 +603,29 @@ body {
   gap: 12px;
 }
 
+.control-btn:active {
+  transform: translateY(-1px) scale(0.98);
+}
+
+.control-btn:disabled,
+.control-btn[disabled] {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.control-btn:focus-visible {
+  outline: 2px solid var(--primary-blue);
+  outline-offset: 2px;
+}
+
 #end-turn {
   background: linear-gradient(135deg, var(--primary-blue), #4f46e5);
   color: white;
 }
 
-#end-turn:hover {
+#end-turn:hover:not(:disabled) {
   transform: translateY(-3px);
   box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4);
 }
@@ -542,7 +636,7 @@ body {
   border: 1px solid var(--border-color);
 }
 
-#restart-game:hover {
+#restart-game:hover:not(:disabled) {
   background: rgba(255, 255, 255, 0.2);
 }
 
@@ -551,9 +645,54 @@ body {
   color: white;
 }
 
-#how-to-play:hover {
+#how-to-play:hover:not(:disabled) {
   transform: translateY(-3px);
   box-shadow: 0 6px 20px rgba(34, 197, 94, 0.4);
+}
+
+/* Sound Control */
+.sound-control {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.sound-btn {
+  padding: 10px 20px;
+  font-size: 1rem;
+  font-weight: 500;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--text-light);
+  border: 1px solid var(--border-color);
+}
+
+.sound-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.sound-btn:active {
+  transform: translateY(-1px) scale(0.98);
+}
+
+.sound-btn:focus-visible {
+  outline: 2px solid var(--primary-blue);
+  outline-offset: 2px;
+}
+
+.sound-btn.muted {
+  background: rgba(239, 68, 68, 0.2);
+  border-color: var(--primary-red);
+}
+
+.sound-btn.muted .fa-volume-up::before {
+  content: '\f6a9'; /* fa-volume-mute */
 }
 
 /* Rules */
@@ -755,26 +894,44 @@ footer a:hover {
   color: var(--primary-blue);
 }
 
-/* Troop Animations */
+/* Troop Animations - Enhanced */
 @keyframes troopMoveHumanToAI {
   0% {
     left: 10%;
-    transform: translateY(-50%) scale(1);
+    transform: translateY(-50%) scale(0.8);
+    opacity: 0.8;
+    filter: brightness(1.2) drop-shadow(0 0 8px rgba(59, 130, 246, 0.7));
+  }
+  50% {
+    transform: translateY(-50%) scale(1.3);
+    opacity: 1;
+    filter: brightness(1.5) drop-shadow(0 0 12px rgba(59, 130, 246, 0.9));
   }
   100% {
     left: 90%;
     transform: translateY(-50%) scale(1);
+    opacity: 0.9;
+    filter: brightness(1) drop-shadow(0 0 4px rgba(59, 130, 246, 0.5));
   }
 }
 
 @keyframes troopMoveAIToHuman {
   0% {
     left: 90%;
-    transform: translateY(-50%) scale(1);
+    transform: translateY(-50%) scale(0.8);
+    opacity: 0.8;
+    filter: brightness(1.2) drop-shadow(0 0 8px rgba(239, 68, 68, 0.7));
+  }
+  50% {
+    transform: translateY(-50%) scale(1.3);
+    opacity: 1;
+    filter: brightness(1.5) drop-shadow(0 0 12px rgba(239, 68, 68, 0.9));
   }
   100% {
     left: 10%;
     transform: translateY(-50%) scale(1);
+    opacity: 0.9;
+    filter: brightness(1) drop-shadow(0 0 4px rgba(239, 68, 68, 0.5));
   }
 }
 
@@ -782,10 +939,11 @@ footer a:hover {
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
-  animation-duration: 1.5s;
-  animation-timing-function: linear;
+  animation-duration: 1.8s;
+  animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
   animation-fill-mode: forwards;
   z-index: 10;
+  will-change: left, transform, opacity, filter;
 }
 
 .troop-moving.human-to-ai {
@@ -797,17 +955,34 @@ footer a:hover {
 }
 
 .troop-explosion {
-  animation: troopExplode 0.5s ease-out forwards;
+  animation: troopExplode 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
 }
 
 @keyframes troopExplode {
   0% {
-    transform: scale(1);
+    transform: scale(1) rotate(0deg);
     opacity: 1;
+    filter: brightness(1) drop-shadow(0 0 20px rgba(255, 255, 255, 0.8));
+  }
+  50% {
+    transform: scale(2.5) rotate(180deg);
+    opacity: 0.8;
+    filter: brightness(2) drop-shadow(0 0 30px rgba(255, 215, 0, 0.9));
   }
   100% {
-    transform: scale(2);
+    transform: scale(0.5) rotate(360deg);
     opacity: 0;
+    filter: brightness(0) drop-shadow(0 0 40px rgba(255, 69, 0, 0.5));
+  }
+}
+
+@keyframes turnPulse {
+  0%,
+  100% {
+    box-shadow: 0 0 5px currentColor;
+  }
+  50% {
+    box-shadow: 0 0 15px currentColor;
   }
 }
 
@@ -843,5 +1018,78 @@ footer a:hover {
 
   .answer-options {
     grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .header h1 {
+    font-size: 2rem;
+  }
+
+  .subtitle {
+    font-size: 1rem;
+  }
+
+  .game-info {
+    padding: 15px;
+  }
+
+  .turn-indicator {
+    font-size: 1.2rem;
+    padding: 10px 20px;
+  }
+
+  .action-btn {
+    padding: 15px;
+    font-size: 1.1rem;
+  }
+
+  .action-btn i {
+    font-size: 1.5rem;
+  }
+
+  .player-side {
+    padding: 15px;
+  }
+
+  .player-header h2 {
+    font-size: 1.3rem;
+  }
+
+  .stat {
+    font-size: 0.9rem;
+  }
+
+  .controls {
+    gap: 10px;
+  }
+
+  .control-btn {
+    padding: 12px 20px;
+    font-size: 1rem;
+  }
+
+  .rules {
+    padding: 15px;
+  }
+
+  .battle-field {
+    padding: 15px;
+  }
+
+  .field-content {
+    height: 200px;
+  }
+
+  .house {
+    width: 120px;
+    height: 120px;
+    font-size: 3rem;
+  }
+
+  .troop {
+    font-size: 1.8rem;
+    width: 40px;
+    height: 40px;
   }
 }

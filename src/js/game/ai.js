@@ -1,6 +1,6 @@
 // AI Module - Multi-objective AI decision making
 class AIPlayer {
-  constructor (difficulty = 'medium') {
+  constructor(difficulty = 'medium') {
     this.difficulty = difficulty;
     this.strategyWeights = {
       answer: 0.4, // Answer questions
@@ -13,7 +13,7 @@ class AIPlayer {
   }
 
   // Choose action based on game state
-  chooseAction (gameState) {
+  chooseAction(gameState) {
     const { ai, human, currentTurn, maxTurns } = gameState;
 
     this.adaptStrategy(ai, human, currentTurn, maxTurns);
@@ -29,7 +29,7 @@ class AIPlayer {
   }
 
   // Adapt strategy based on current situation
-  adaptStrategy (aiState, humanState, currentTurn, maxTurns) {
+  adaptStrategy(aiState, humanState, currentTurn, maxTurns) {
     const turnRatio = currentTurn / maxTurns;
     const healthRatio = aiState.health / 100;
 
@@ -60,7 +60,7 @@ class AIPlayer {
   }
 
   // Select strategy based on current weights
-  selectStrategy () {
+  selectStrategy() {
     const total =
       this.strategyWeights.answer +
       this.strategyWeights.attack +
@@ -75,39 +75,39 @@ class AIPlayer {
   }
 
   // Generate specific action for chosen strategy
-  generateAction (strategy, aiState, humanState) {
+  generateAction(strategy, aiState, humanState) {
     switch (strategy) {
-    case 'answer': {
-      return {
-        type: 'answer',
-        confidence: this.getAnswerConfidence(),
-      };
-    }
+      case 'answer': {
+        return {
+          type: 'answer',
+          confidence: this.getAnswerConfidence(),
+        };
+      }
 
-    case 'attack': {
-      const maxTroops = Math.min(5, aiState.troops);
-      const troops = Math.floor(maxTroops * (0.3 + Math.random() * 0.7));
-      return {
-        type: 'attack',
-        troops: Math.max(1, troops),
-        target: 'human',
-      };
-    }
+      case 'attack': {
+        const maxTroops = Math.min(5, aiState.troops);
+        const troops = Math.floor(maxTroops * (0.3 + Math.random() * 0.7));
+        return {
+          type: 'attack',
+          troops: Math.max(1, troops),
+          target: 'human',
+        };
+      }
 
-    case 'defend': {
-      return {
-        type: 'defend',
-        boost: 20,
-      };
-    }
+      case 'defend': {
+        return {
+          type: 'defend',
+          boost: 20,
+        };
+      }
 
-    default:
-      return { type: 'answer', confidence: 0.7 };
+      default:
+        return { type: 'answer', confidence: 0.7 };
     }
   }
 
   // Get AI's chance to answer correctly based on difficulty
-  getAnswerConfidence () {
+  getAnswerConfidence() {
     const baseConfidence = {
       easy: 0.6,
       medium: 0.75,
@@ -117,7 +117,7 @@ class AIPlayer {
   }
 
   // Update strategy weights based on action outcome
-  updateWeights (strategy, outcome) {
+  updateWeights(strategy, outcome) {
     const learningRate = 0.05;
 
     if (strategy === 'answer' && outcome.success) {
@@ -135,7 +135,7 @@ class AIPlayer {
   }
 
   // Normalize weights to sum to 1
-  normalizeWeights () {
+  normalizeWeights() {
     const total =
       this.strategyWeights.answer +
       this.strategyWeights.attack +
@@ -148,7 +148,7 @@ class AIPlayer {
   }
 
   // Set difficulty level
-  setDifficulty (difficulty) {
+  setDifficulty(difficulty) {
     if (['easy', 'medium', 'hard'].includes(difficulty)) {
       this.difficulty = difficulty;
       return true;
@@ -157,7 +157,7 @@ class AIPlayer {
   }
 
   // Get AI personality traits
-  getPersonality () {
+  getPersonality() {
     return {
       knowledge: this.knowledge,
       aggression: this.aggression,
