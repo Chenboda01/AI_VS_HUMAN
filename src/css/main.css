@@ -757,13 +757,25 @@ footer a:hover {
 
 /* Troop Animations */
 @keyframes troopMoveHumanToAI {
-  0% { left: 10%; transform: translateY(-50%) scale(1); }
-  100% { left: 90%; transform: translateY(-50%) scale(1); }
+  0% {
+    left: 10%;
+    transform: translateY(-50%) scale(1);
+  }
+  100% {
+    left: 90%;
+    transform: translateY(-50%) scale(1);
+  }
 }
 
 @keyframes troopMoveAIToHuman {
-  0% { left: 90%; transform: translateY(-50%) scale(1); }
-  100% { left: 10%; transform: translateY(-50%) scale(1); }
+  0% {
+    left: 90%;
+    transform: translateY(-50%) scale(1);
+  }
+  100% {
+    left: 10%;
+    transform: translateY(-50%) scale(1);
+  }
 }
 
 .troop-moving {
@@ -789,8 +801,14 @@ footer a:hover {
 }
 
 @keyframes troopExplode {
-  0% { transform: scale(1); opacity: 1; }
-  100% { transform: scale(2); opacity: 0; }
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(2);
+    opacity: 0;
+  }
 }
 
 /* Responsive Design */

@@ -68,7 +68,9 @@ class AIPlayer {
     const rand = Math.random() * total;
 
     if (rand < this.strategyWeights.answer) return 'answer';
-    if (rand < this.strategyWeights.answer + this.strategyWeights.attack) { return 'attack'; }
+    if (rand < this.strategyWeights.answer + this.strategyWeights.attack) {
+      return 'attack';
+    }
     return 'defend';
   }
 

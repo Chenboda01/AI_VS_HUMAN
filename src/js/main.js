@@ -12,10 +12,14 @@ document.addEventListener('DOMContentLoaded', () => {
     if (selectedRole === 'ai') {
       gameEngine.swapPlayerControls();
 
-      document.querySelector('.human-side h2').innerHTML = '<i class="fas fa-robot"></i> AI (Opponent)';
-      document.querySelector('.ai-side h2').innerHTML = '<i class="fas fa-user"></i> Player (AI Side)';
-      document.querySelector('.human-side .player-header h2').innerHTML = '<i class="fas fa-robot"></i> AI Opponent';
-      document.querySelector('.ai-side .player-header h2').innerHTML = '<i class="fas fa-user"></i> Player (AI)';
+      document.querySelector('.human-side h2').innerHTML =
+        '<i class="fas fa-robot"></i> AI (Opponent)';
+      document.querySelector('.ai-side h2').innerHTML =
+        '<i class="fas fa-user"></i> Player (AI Side)';
+      document.querySelector('.human-side .player-header h2').innerHTML =
+        '<i class="fas fa-robot"></i> AI Opponent';
+      document.querySelector('.ai-side .player-header h2').innerHTML =
+        '<i class="fas fa-user"></i> Player (AI)';
 
       // Move action panel from human side to AI side
       const humanSide = document.querySelector('.human-side');
@@ -39,10 +43,12 @@ document.addEventListener('DOMContentLoaded', () => {
     window.uiManager = uiManager;
     window.gameController = gameController;
 
-    console.log(`AI vs HUMAN game initialized with player controlling ${selectedRole.toUpperCase()} side!`);
+    console.log(
+      `AI vs HUMAN game initialized with player controlling ${selectedRole.toUpperCase()} side!`,
+    );
   }
 
-  roleOptions.forEach(btn => {
+  roleOptions.forEach((btn) => {
     btn.addEventListener('click', () => {
       const role = btn.dataset.role;
       startGameWithRole(role);
@@ -438,7 +444,11 @@ class GameController {
   // AI turn processing
   processAITurn () {
     const state = this.gameEngine.getGameState();
-    console.log('processAITurn called', { currentPlayer: state.currentPlayer, aiThinking: this.aiThinking, gameOver: state.gameOver });
+    console.log('processAITurn called', {
+      currentPlayer: state.currentPlayer,
+      aiThinking: this.aiThinking,
+      gameOver: state.gameOver,
+    });
 
     // Reset AI thinking flag if it's human's turn (safety)
     if (state.currentPlayer === 'human') {
@@ -465,8 +475,16 @@ class GameController {
         if (result && result.strategy) {
           this.uiManager.showMessage(`AI chose to ${result.strategy}`, 'info');
 
-          if (result.strategy === 'attack' && result.result && result.result.troops) {
-            this.uiManager.animateTroopSend('ai', 'human', result.result.troops);
+          if (
+            result.strategy === 'attack' &&
+            result.result &&
+            result.result.troops
+          ) {
+            this.uiManager.animateTroopSend(
+              'ai',
+              'human',
+              result.result.troops,
+            );
           }
         }
 
@@ -479,7 +497,10 @@ class GameController {
         }
       }, 1000);
     } else {
-      console.log('AI turn not triggered:', { currentPlayer: state.currentPlayer, aiThinking: this.aiThinking });
+      console.log('AI turn not triggered:', {
+        currentPlayer: state.currentPlayer,
+        aiThinking: this.aiThinking,
+      });
     }
   }
 

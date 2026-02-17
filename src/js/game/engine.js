@@ -171,7 +171,9 @@ class GameEngine {
 
   // Human action: Answer current question
   answerQuestion (answerIndex) {
-    if (this.state.currentPlayer !== 'human' || this.state.gameOver) { return false; }
+    if (this.state.currentPlayer !== 'human' || this.state.gameOver) {
+      return false;
+    }
 
     const question = this.questions[this.currentQuestionIndex];
     const isCorrect = answerIndex === question.correct;
@@ -197,7 +199,9 @@ class GameEngine {
 
   // Human action: Send troops to attack AI
   sendTroops (humanTroopsCount) {
-    if (this.state.currentPlayer !== 'human' || this.state.gameOver) { return false; }
+    if (this.state.currentPlayer !== 'human' || this.state.gameOver) {
+      return false;
+    }
 
     const troops = Math.min(humanTroopsCount, this.players.human.troops);
     if (troops <= 0) {
@@ -233,7 +237,9 @@ class GameEngine {
 
   // Human action: Defend house
   defendHouse () {
-    if (this.state.currentPlayer !== 'human' || this.state.gameOver) { return false; }
+    if (this.state.currentPlayer !== 'human' || this.state.gameOver) {
+      return false;
+    }
 
     this.players.human.houseDefended = true;
     this.players.human.defense += 20;
@@ -429,7 +435,9 @@ class GameEngine {
     const temp = this.players.human;
     this.players.human = this.players.ai;
     this.players.ai = temp;
-    this.logEvent('Player controls swapped - human side is now AI-controlled and vice versa');
+    this.logEvent(
+      'Player controls swapped - human side is now AI-controlled and vice versa',
+    );
   }
 
   // Set game difficulty
