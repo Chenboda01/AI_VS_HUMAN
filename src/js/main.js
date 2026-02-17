@@ -32,23 +32,8 @@ document.addEventListener('DOMContentLoaded', () => {
       if (actionPanel && aiInfo) {
         humanSide.removeChild(actionPanel);
         aiSide.insertBefore(actionPanel, aiInfo);
-      }
-    }
-
-    const uiManager = new UIManager(gameEngine);
-    uiManager.init();
-
-    const gameController = new GameController(gameEngine, uiManager);
-    gameController.init();
-
-    window.gameEngine = gameEngine;
-    window.uiManager = uiManager;
-    window.gameController = gameController;
-
-    console.log(
-      `AI vs HUMAN game initialized with player controlling ${selectedRole.toUpperCase()} side!`,
-    );
   }
+}
 
   // Ensure audio context is ready for sound effects
   function ensureAudioContext () {
@@ -583,8 +568,8 @@ class GameController {
               'human',
               result.result.troops,
             );
-          }
-        }
+  }
+}
 
         this.aiThinking = false;
 
