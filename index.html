@@ -1,171 +1,290 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>AI vs HUMAN - Turn-Based Strategy Game</title>
-    <link rel="stylesheet" href="src/css/main.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
-</head>
-<body>
+    <link rel="stylesheet" href="src/css/main.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Roboto:wght@300;400;500&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <!-- Role Selection Modal -->
+    <div id="role-selection-modal" class="modal-overlay" style="display: flex">
+      <div class="modal-content">
+        <h2><i class="fas fa-user-circle"></i> Choose Your Side</h2>
+        <p class="modal-description">
+          Select which side you want to play as. The other side will be
+          controlled by AI.
+        </p>
+
+        <div class="role-options">
+          <div class="role-option" data-role="human">
+            <div class="role-icon">
+              <i class="fas fa-user"></i>
+            </div>
+            <h3>Human</h3>
+            <p class="role-description">
+              Play as the Human side. Answer questions, send troops, and defend
+              your house against AI attacks.
+            </p>
+            <div class="role-highlights">
+              <div>
+                <i class="fas fa-check-circle"></i> Control human actions
+                directly
+              </div>
+              <div>
+                <i class="fas fa-check-circle"></i> Make strategic decisions
+                each turn
+              </div>
+              <div>
+                <i class="fas fa-check-circle"></i> Compete against AI opponent
+              </div>
+            </div>
+            <button class="role-select-btn" data-role="human">
+              Play as Human
+            </button>
+          </div>
+
+          <div class="role-option" data-role="ai">
+            <div class="role-icon">
+              <i class="fas fa-robot"></i>
+            </div>
+            <h3>AI</h3>
+            <p class="role-description">
+              Play as the AI side. Use algorithmic thinking to outsmart the
+              human opponent.
+            </p>
+            <div class="role-highlights">
+              <div>
+                <i class="fas fa-check-circle"></i> Control AI actions directly
+              </div>
+              <div>
+                <i class="fas fa-check-circle"></i> Experience the AI's decision
+                making
+              </div>
+              <div>
+                <i class="fas fa-check-circle"></i> Challenge human opponent
+              </div>
+            </div>
+            <button class="role-select-btn" data-role="ai">Play as AI</button>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <p class="hint">
+            <i class="fas fa-info-circle"></i> You can change this later by
+            restarting the game.
+          </p>
+        </div>
+      </div>
+    </div>
+
     <div class="container">
-        <header class="header">
-            <h1><i class="fas fa-robot"></i> AI <span class="vs">VS</span> HUMAN <i class="fas fa-user"></i></h1>
-            <p class="subtitle">A Turn-Based Strategy Game - 10 Rounds Each</p>
-        </header>
+      <header class="header">
+        <h1>
+          <i class="fas fa-robot"></i> AI <span class="vs">VS</span> HUMAN
+          <i class="fas fa-user"></i>
+        </h1>
+        <p class="subtitle">A Turn-Based Strategy Game - 10 Rounds Each</p>
+      </header>
 
-        <div class="game-info">
-            <div class="turn-indicator">
-                <span id="current-player">Human</span>'s Turn
-                <div class="turn-counter">Turn: <span id="turn-number">1</span>/20</div>
+      <div class="game-info">
+        <div class="turn-indicator">
+          <span id="current-player">Human</span>'s Turn
+          <div class="turn-counter">
+            Turn: <span id="turn-number">1</span>/20
+          </div>
+        </div>
+        <div class="score-board">
+          <div class="score human-score">
+            <i class="fas fa-user"></i> Human: <span id="human-score">0</span>
+          </div>
+          <div class="score ai-score">
+            <i class="fas fa-robot"></i> AI: <span id="ai-score">0</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="game-area">
+        <!-- Human Side -->
+        <div class="player-side human-side">
+          <div class="player-header">
+            <h2><i class="fas fa-user"></i> Human Player</h2>
+            <div class="player-stats">
+              <div class="stat">
+                <i class="fas fa-heart"></i> Health:
+                <span id="human-health">100</span>
+              </div>
+              <div class="stat">
+                <i class="fas fa-shield-alt"></i> Defense:
+                <span id="human-defense">50</span>
+              </div>
+              <div class="stat">
+                <i class="fas fa-troops"></i> Troops:
+                <span id="human-troops">10</span>
+              </div>
             </div>
-            <div class="score-board">
-                <div class="score human-score">
-                    <i class="fas fa-user"></i> Human: <span id="human-score">0</span>
-                </div>
-                <div class="score ai-score">
-                    <i class="fas fa-robot"></i> AI: <span id="ai-score">0</span>
-                </div>
+          </div>
+
+          <div class="action-panel">
+            <h3>Your Actions</h3>
+            <div class="actions">
+              <button class="action-btn" id="answer-questions">
+                <i class="fas fa-brain"></i> Answer Questions<br />
+                <small>Gain knowledge points</small>
+              </button>
+              <button class="action-btn" id="send-troops">
+                <i class="fas fa-fighter-jet"></i> Send Troops<br />
+                <small>Attack AI's house</small>
+              </button>
+              <button class="action-btn" id="defend-house">
+                <i class="fas fa-shield-alt"></i> Defend House<br />
+                <small>Boost defense</small>
+              </button>
             </div>
+
+            <div class="questions-panel">
+              <h4>Current Question:</h4>
+              <p id="current-question">What is the capital of France?</p>
+              <div class="answer-options">
+                <button class="answer-btn">Paris</button>
+                <button class="answer-btn">London</button>
+                <button class="answer-btn">Berlin</button>
+                <button class="answer-btn">Madrid</button>
+              </div>
+            </div>
+          </div>
         </div>
 
-        <div class="game-area">
-            <!-- Human Side -->
-            <div class="player-side human-side">
-                <div class="player-header">
-                    <h2><i class="fas fa-user"></i> Human Player</h2>
-                    <div class="player-stats">
-                        <div class="stat"><i class="fas fa-heart"></i> Health: <span id="human-health">100</span></div>
-                        <div class="stat"><i class="fas fa-shield-alt"></i> Defense: <span id="human-defense">50</span></div>
-                        <div class="stat"><i class="fas fa-troops"></i> Troops: <span id="human-troops">10</span></div>
-                    </div>
-                </div>
-                
-                <div class="action-panel">
-                    <h3>Your Actions</h3>
-                    <div class="actions">
-                        <button class="action-btn" id="answer-questions">
-                            <i class="fas fa-brain"></i> Answer Questions<br>
-                            <small>Gain knowledge points</small>
-                        </button>
-                        <button class="action-btn" id="send-troops">
-                            <i class="fas fa-fighter-jet"></i> Send Troops<br>
-                            <small>Attack AI's house</small>
-                        </button>
-                        <button class="action-btn" id="defend-house">
-                            <i class="fas fa-shield-alt"></i> Defend House<br>
-                            <small>Boost defense</small>
-                        </button>
-                    </div>
-                    
-                    <div class="questions-panel">
-                        <h4>Current Question:</h4>
-                        <p id="current-question">What is the capital of France?</p>
-                        <div class="answer-options">
-                            <button class="answer-btn">Paris</button>
-                            <button class="answer-btn">London</button>
-                            <button class="answer-btn">Berlin</button>
-                            <button class="answer-btn">Madrid</button>
-                        </div>
-                    </div>
-                </div>
+        <!-- Battle Field -->
+        <div class="battle-field">
+          <div class="field-header">
+            <h3><i class="fas fa-battle-net"></i> Battle Field</h3>
+          </div>
+          <div class="field-content">
+            <div class="house human-house">
+              <i class="fas fa-home"></i>
+              <div class="house-label">Human House</div>
             </div>
 
-            <!-- Battle Field -->
-            <div class="battle-field">
-                <div class="field-header">
-                    <h3><i class="fas fa-battle-net"></i> Battle Field</h3>
-                </div>
-                <div class="field-content">
-                    <div class="house human-house">
-                        <i class="fas fa-home"></i>
-                        <div class="house-label">Human House</div>
-                    </div>
-                    
-                    <div class="troop-movement">
-                        <div class="troop human-troop" id="human-troop-1">🚶</div>
-                        <div class="troop ai-troop" id="ai-troop-1">🤖</div>
-                    </div>
-                    
-                    <div class="house ai-house">
-                        <i class="fas fa-robot"></i>
-                        <div class="house-label">AI House</div>
-                    </div>
-                </div>
-                
-                <div class="battle-log">
-                    <h4>Battle Log</h4>
-                    <div id="log-content">
-                        <div class="log-entry">Game started! Human goes first.</div>
-                    </div>
-                </div>
+            <div class="troop-movement">
+              <div class="troop human-troop" id="human-troop-1">🚶</div>
+              <div class="troop ai-troop" id="ai-troop-1">🤖</div>
             </div>
 
-            <!-- AI Side -->
-            <div class="player-side ai-side">
-                <div class="player-header">
-                    <h2><i class="fas fa-robot"></i> AI Player</h2>
-                    <div class="player-stats">
-                        <div class="stat"><i class="fas fa-heart"></i> Health: <span id="ai-health">100</span></div>
-                        <div class="stat"><i class="fas fa-shield-alt"></i> Defense: <span id="ai-defense">50</span></div>
-                        <div class="stat"><i class="fas fa-troops"></i> Troops: <span id="ai-troops">10</span></div>
-                    </div>
-                </div>
-                
-                <div class="ai-info">
-                    <h3>AI Strategy</h3>
-                    <div class="strategy-indicators">
-                        <div class="strategy active" data-strategy="answer">
-                            <i class="fas fa-brain"></i> Answering Questions
-                        </div>
-                        <div class="strategy" data-strategy="attack">
-                            <i class="fas fa-fighter-jet"></i> Sending Troops
-                        </div>
-                        <div class="strategy" data-strategy="defend">
-                            <i class="fas fa-shield-alt"></i> Defending House
-                        </div>
-                    </div>
-                    <p class="ai-desc">The AI uses a multi-objective algorithm to balance between gaining knowledge, attacking, and defending.</p>
-                </div>
-                
-                <div class="difficulty-selector">
-                    <h4>Difficulty</h4>
-                    <div class="difficulty-buttons">
-                        <button class="diff-btn active">Easy</button>
-                        <button class="diff-btn">Medium</button>
-                        <button class="diff-btn">Hard</button>
-                    </div>
-                </div>
+            <div class="house ai-house">
+              <i class="fas fa-robot"></i>
+              <div class="house-label">AI House</div>
             </div>
+          </div>
+
+          <div class="battle-log">
+            <h4>Battle Log</h4>
+            <div id="log-content">
+              <div class="log-entry">Game started! Human goes first.</div>
+            </div>
+          </div>
         </div>
 
-        <div class="controls">
-            <button id="end-turn" class="control-btn">
-                <i class="fas fa-forward"></i> End Turn
-            </button>
-            <button id="restart-game" class="control-btn">
-                <i class="fas fa-redo"></i> Restart Game
-            </button>
-            <button id="how-to-play" class="control-btn">
-                <i class="fas fa-question-circle"></i> How to Play
-            </button>
-        </div>
+        <!-- AI Side -->
+        <div class="player-side ai-side">
+          <div class="player-header">
+            <h2><i class="fas fa-robot"></i> AI Player</h2>
+            <div class="player-stats">
+              <div class="stat">
+                <i class="fas fa-heart"></i> Health:
+                <span id="ai-health">100</span>
+              </div>
+              <div class="stat">
+                <i class="fas fa-shield-alt"></i> Defense:
+                <span id="ai-defense">50</span>
+              </div>
+              <div class="stat">
+                <i class="fas fa-troops"></i> Troops:
+                <span id="ai-troops">10</span>
+              </div>
+            </div>
+          </div>
 
-        <div class="rules">
-            <h3><i class="fas fa-book"></i> How to Play</h3>
-            <ul>
-                <li>Each player (Human and AI) gets <strong>10 turns</strong>.</li>
-                <li>On your turn, choose one action: <strong>Answer Questions</strong> (gain points), <strong>Send Troops</strong> (attack opponent), or <strong>Defend House</strong> (reduce damage).</li>
-                <li>AI uses a multi-objective algorithm to balance between answering questions, sending troops, and defending.</li>
-                <li>After 20 turns total, the player with the highest score wins!</li>
-            </ul>
-            <p><strong>Goal:</strong> Outscore your opponent by making strategic decisions each turn.</p>
-        </div>
+          <div class="ai-info">
+            <h3>AI Strategy</h3>
+            <div class="strategy-indicators">
+              <div class="strategy active" data-strategy="answer">
+                <i class="fas fa-brain"></i> Answering Questions
+              </div>
+              <div class="strategy" data-strategy="attack">
+                <i class="fas fa-fighter-jet"></i> Sending Troops
+              </div>
+              <div class="strategy" data-strategy="defend">
+                <i class="fas fa-shield-alt"></i> Defending House
+              </div>
+            </div>
+            <p class="ai-desc">
+              The AI uses a multi-objective algorithm to balance between gaining
+              knowledge, attacking, and defending.
+            </p>
+          </div>
 
-        <footer>
-            <p>AI vs HUMAN Game | Deployed on <a href="https://chenboda01.github.io/AI_VS_HUMAN/" target="_blank">GitHub Pages</a></p>
-        </footer>
+          <div class="difficulty-selector">
+            <h4>Difficulty</h4>
+            <div class="difficulty-buttons">
+              <button class="diff-btn active">Easy</button>
+              <button class="diff-btn">Medium</button>
+              <button class="diff-btn">Hard</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="controls">
+        <button id="end-turn" class="control-btn">
+          <i class="fas fa-forward"></i> End Turn
+        </button>
+        <button id="restart-game" class="control-btn">
+          <i class="fas fa-redo"></i> Restart Game
+        </button>
+        <button id="how-to-play" class="control-btn">
+          <i class="fas fa-question-circle"></i> How to Play
+        </button>
+      </div>
+
+      <div class="rules">
+        <h3><i class="fas fa-book"></i> How to Play</h3>
+        <ul>
+          <li>Each player (Human and AI) gets <strong>10 turns</strong>.</li>
+          <li>
+            On your turn, choose one action:
+            <strong>Answer Questions</strong> (gain points),
+            <strong>Send Troops</strong> (attack opponent), or
+            <strong>Defend House</strong> (reduce damage).
+          </li>
+          <li>
+            AI uses a multi-objective algorithm to balance between answering
+            questions, sending troops, and defending.
+          </li>
+          <li>After 20 turns total, the player with the highest score wins!</li>
+        </ul>
+        <p>
+          <strong>Goal:</strong> Outscore your opponent by making strategic
+          decisions each turn.
+        </p>
+      </div>
+
+      <footer>
+        <p>
+          AI vs HUMAN Game | Deployed on
+          <a href="https://chenboda01.github.io/AI_VS_HUMAN/" target="_blank"
+            >GitHub Pages</a
+          >
+        </p>
+      </footer>
     </div>
 
     <!-- JavaScript Files -->
@@ -177,5 +296,5 @@
     <script src="src/js/utils/scoring.js"></script>
     <script src="src/js/utils/helpers.js"></script>
     <script src="src/js/main.js"></script>
-</body>
+  </body>
 </html>

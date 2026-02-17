@@ -1,0 +1,5 @@
+- Follow the project's code style guidelines exactly
+- Write comprehensive tests for new features
+- Use semantic commit messages
+- Keep functions small and focused (max 20 lines)
+- Add JSDoc comments for public APIs
